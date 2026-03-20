@@ -1,17 +1,25 @@
-# crypto_trader
+# Crypto Trader
 
-A new Flutter project.
+A paper trading crypto app built with Flutter.
+Trade real cryptocurrencies with fake money using
+live market data from CoinGecko.
+
+## Tech Stack
+
+- Flutter
+- Riverpod
+- Hive
+- Dio
+- CoinGecko API
+
+## Prerequisites
+
+- Flutter SDK (3.x)
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+coming soon
 
-A few resources to get you started if this is your first Flutter project:
+## Screenshots
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+coming soon
