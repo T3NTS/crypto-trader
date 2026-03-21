@@ -10,7 +10,7 @@ class CoinGeckoService {
     ),
   );
 
-  static const _perPage = 25;
+  static const _perPage = 50;
   static const _vsCurrency = 'usd';
 
   Future<List<Coin>> getCoins(int page) async {

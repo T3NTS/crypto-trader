@@ -4,7 +4,9 @@ import '../models/coin.dart';
 
 class CoinTile extends StatelessWidget {
   final Coin coin;
-  const CoinTile({super.key, required this.coin});
+  final VoidCallback? onTap;
+
+  const CoinTile({super.key, required this.coin, this.onTap});
 
   @override
   Widget build(BuildContext context) {

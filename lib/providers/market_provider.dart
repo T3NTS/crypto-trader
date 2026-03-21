@@ -10,6 +10,7 @@ class MarketState {
   final bool hasMore;
   final int currentPage;
   final String searchQuery;
+  final int _perPage = 50;
 
   const MarketState({
     this.coins = const [],
@@ -71,7 +72,7 @@ class MarketNotifier extends StateNotifier<MarketState> {
         coins: coins,
         isLoading: false,
         currentPage: 1,
-        hasMore: coins.length == 25,
+        hasMore: coins.length == state._perPage,
       );
     } catch (e) {
       state = state.copyWith(isLoading: false, hasError: true);
@@ -81,7 +82,7 @@ class MarketNotifier extends StateNotifier<MarketState> {
   Future<void> loadMore() async {
     if (state.isPaginating) return;
     if (!state.hasMore) return;
-    if (state.currentPage >= 10) return;
+    if (state.currentPage >= 2) return;
     if (state.searchQuery.isNotEmpty) return;
 
     state = state.copyWith(isPaginating: true);
@@ -94,7 +95,7 @@ class MarketNotifier extends StateNotifier<MarketState> {
         coins: [...state.coins, ...newCoins],
         isPaginating: false,
         currentPage: nextPage,
-        hasMore: newCoins.length == 25,
+        hasMore: newCoins.length == state._perPage,
       );
     } catch (e) {
       state = state.copyWith(isPaginating: false, hasError: true);
