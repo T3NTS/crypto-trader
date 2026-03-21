@@ -17,6 +17,34 @@ class CryptoTraderApp extends StatelessWidget {
           brightness: Brightness.dark,
         ),
         scaffoldBackgroundColor: const Color(0xFF0D0D0D),
+        navigationBarTheme: NavigationBarThemeData(
+          height: 64,
+          backgroundColor: Colors.transparent,
+          indicatorColor: Colors.transparent,
+          overlayColor: WidgetStateProperty.all(Colors.transparent),
+          iconTheme: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return IconThemeData(color: Color(0xFF6C5CE7).withOpacity(0.75));
+            }
+            return const IconThemeData(color: Colors.grey);
+          }),
+          labelTextStyle: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return TextStyle(
+                color: Color(0xFF6C5CE7),
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.2,
+              );
+            }
+            return const TextStyle(
+              color: Colors.grey,
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.2,
+            );
+          }),
+        ),
       ),
       home: const MainScreen(),
     );

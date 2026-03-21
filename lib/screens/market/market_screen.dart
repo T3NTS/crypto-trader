@@ -57,7 +57,7 @@ class _MarketScreenState extends ConsumerState<MarketScreen> {
                 ref.read(marketProvider.notifier).updateSearch(query);
               },
               decoration: InputDecoration(
-                hintText: 'Search coins...',
+                hintText: 'Search',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),

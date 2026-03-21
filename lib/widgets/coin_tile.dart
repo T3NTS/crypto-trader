@@ -24,19 +24,22 @@ class CoinTile extends StatelessWidget {
         errorWidget: (context, url, error) =>
             const Icon(Icons.currency_bitcoin),
       ),
-      title: Text(coin.name),
-      subtitle: Text(coin.symbol.toUpperCase()),
+      title: Text(coin.name, style: TextStyle(fontWeight: FontWeight.w500)),
+      subtitle: Text(
+        coin.symbol.toUpperCase(),
+        style: TextStyle(color: Colors.grey),
+      ),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
             '\$${coin.currentPrice.toStringAsFixed(2)}',
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
           ),
           Text(
             '$changePrefix${coin.priceChangePercentage24h.toStringAsFixed(2)}%',
-            style: TextStyle(color: changeColor, fontSize: 12),
+            style: TextStyle(color: changeColor, fontSize: 14),
           ),
         ],
       ),
