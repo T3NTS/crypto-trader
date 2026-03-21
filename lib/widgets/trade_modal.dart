@@ -218,6 +218,7 @@ class _TradeModalState extends ConsumerState<TradeModal> {
           coinImage: widget.coin.image,
           amount: 0,
           averageBuyPrice: 0,
+          lastKnownPrice: 0,
         ),
       );
       return Text(

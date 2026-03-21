@@ -18,6 +18,10 @@ class PortfolioScreen extends ConsumerWidget {
       for (final coin in market.coins) coin.id: coin.currentPrice,
     };
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(portfolioProvider.notifier).updateLastKnownPrices(prices);
+    });
+
     final totalValue = portfolio.totalValue(prices);
     final dailyPnl = portfolio.dailyPnl(prices);
     final dailyPnlPercentage = totalValue > 0
@@ -76,10 +80,10 @@ class PortfolioScreen extends ConsumerWidget {
             SliverList(
               delegate: SliverChildBuilderDelegate((context, index) {
                 final holding = portfolio.holdings[index];
-                final currentPrice = prices[holding.coinId] ?? 0;
+                final currentPrice = prices[holding.coinId];
                 return HoldingTile(
                   holding: holding,
-                  currentPrice: currentPrice,
+                  currentPrice: currentPrice ?? holding.lastKnownPrice,
                   onTap: () => showTradeModal(
                     context,
                     coin: Coin(
@@ -87,7 +91,7 @@ class PortfolioScreen extends ConsumerWidget {
                       name: holding.coinName,
                       symbol: holding.coinSymbol,
                       image: holding.coinImage,
-                      currentPrice: currentPrice,
+                      currentPrice: currentPrice ?? holding.lastKnownPrice,
                       priceChangePercentage24h: 0,
                       marketCap: 0,
                     ),

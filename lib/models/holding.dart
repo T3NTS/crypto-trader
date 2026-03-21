@@ -5,6 +5,7 @@ class Holding {
   final String coinImage;
   final double amount;
   final double averageBuyPrice;
+  final double lastKnownPrice;
 
   const Holding({
     required this.coinId,
@@ -13,6 +14,7 @@ class Holding {
     required this.coinImage,
     required this.amount,
     required this.averageBuyPrice,
+    required this.lastKnownPrice,
   });
 
   double currentValue(double currentPrice) => amount * currentPrice;
@@ -27,6 +29,7 @@ class Holding {
     'coinImage': coinImage,
     'amount': amount,
     'averageBuyPrice': averageBuyPrice,
+    'lastKnownPrice': lastKnownPrice,
   };
 
   factory Holding.fromJson(Map<String, dynamic> json) => Holding(
@@ -36,5 +39,6 @@ class Holding {
     coinImage: json['coinImage'] as String,
     amount: (json['amount'] as num).toDouble(),
     averageBuyPrice: (json['averageBuyPrice'] as num).toDouble(),
+    lastKnownPrice: (json['lastKnownPrice'] as num).toDouble(),
   );
 }
