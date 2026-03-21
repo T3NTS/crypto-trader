@@ -36,10 +36,13 @@ class HoldingTile extends StatelessWidget {
         errorWidget: (context, url, error) =>
             const Icon(Icons.currency_bitcoin),
       ),
-      title: Text(holding.coinName),
+      title: Text(
+        holding.coinName,
+        style: TextStyle(fontWeight: FontWeight.w500),
+      ),
       subtitle: Text(
         '${holding.amount.toStringAsFixed(5)} ${holding.coinSymbol.toUpperCase()}',
-        style: const TextStyle(color: Colors.grey),
+        style: TextStyle(color: Colors.grey),
       ),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -47,11 +50,11 @@ class HoldingTile extends StatelessWidget {
         children: [
           Text(
             '\$${holding.currentValue(currentPrice).toStringAsFixed(2)}',
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
           Text(
-            '$pnlPrefix\$${pnl.toStringAsFixed(2)} ($pnlPrefix${pnlPct.toStringAsFixed(2)}%)',
-            style: TextStyle(color: pnlColor, fontSize: 12),
+            '$pnlPrefix${pnlPct.toStringAsFixed(2)}%',
+            style: TextStyle(color: pnlColor, fontSize: 14),
           ),
         ],
       ),
