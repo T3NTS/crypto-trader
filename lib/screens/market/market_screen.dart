@@ -19,6 +19,12 @@ class _MarketScreenState extends ConsumerState<MarketScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final searchQuery = ref.read(marketProvider).searchQuery;
+      if (searchQuery.isNotEmpty) {
+        _searchController.text = searchQuery;
+      }
+    });
   }
 
   @override
