@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:crypto_trader/services/coin_gecko_service.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import '../models/coin.dart';
@@ -56,9 +58,40 @@ class MarketState {
 
 class MarketNotifier extends StateNotifier<MarketState> {
   final CoinGeckoService _service;
+  Timer? _refreshTimer;
 
   MarketNotifier(this._service) : super(const MarketState()) {
     fetchInitial();
+    _startPriceRefresh();
+  }
+
+  void _startPriceRefresh() {
+    _refreshTimer = Timer.periodic(
+      const Duration(seconds: 60),
+      (_) => _silentRefresh(),
+    );
+  }
+
+  Future<void> _silentRefresh() async {
+    if (state.coins.isEmpty) return;
+
+    try {
+      final pagesToRefresh = (state.coins.length / state._perPage).ceil();
+      List<Coin> freshCoins = [];
+
+      for (int page = 1; page <= pagesToRefresh; page++) {
+        final coins = await _service.getCoins(page);
+        freshCoins = [...freshCoins, ...coins];
+      }
+
+      state = state.copyWith(coins: freshCoins);
+    } catch (_) {}
+  }
+
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    super.dispose();
   }
 
   Future<void> fetchInitial() async {

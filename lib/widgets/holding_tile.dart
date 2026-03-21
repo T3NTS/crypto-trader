@@ -38,7 +38,7 @@ class HoldingTile extends StatelessWidget {
       ),
       title: Text(holding.coinName),
       subtitle: Text(
-        '${holding.amount} ${holding.coinSymbol}',
+        '${holding.amount.toStringAsFixed(5)} ${holding.coinSymbol.toUpperCase()}',
         style: const TextStyle(color: Colors.grey),
       ),
       trailing: Column(
