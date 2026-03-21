@@ -2,9 +2,13 @@ import 'package:dio/dio.dart';
 import '../models/coin.dart';
 
 class CoinGeckoService {
-  CoinGeckoService(this._dio);
-
-  final Dio _dio;
+  final Dio _dio = Dio(
+    BaseOptions(
+      baseUrl: 'https://api.coingecko.com/api/v3',
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 10),
+    ),
+  );
 
   static const _perPage = 25;
   static const _vsCurrency = 'usd';
