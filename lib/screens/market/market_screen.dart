@@ -1,5 +1,6 @@
 import 'package:crypto_trader/providers/market_provider.dart';
 import 'package:crypto_trader/widgets/coin_tile.dart';
+import 'package:crypto_trader/widgets/trade_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -108,7 +109,10 @@ class _MarketScreenState extends ConsumerState<MarketScreen> {
           }
 
           final coin = state.filteredCoins[index];
-          return CoinTile(coin: coin, onTap: () {});
+          return CoinTile(
+            coin: coin,
+            onTap: () => showTradeModal(context, coin: coin),
+          );
         },
       ),
     );

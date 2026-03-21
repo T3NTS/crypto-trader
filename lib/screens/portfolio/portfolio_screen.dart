@@ -1,4 +1,6 @@
+import 'package:crypto_trader/models/coin.dart';
 import 'package:crypto_trader/widgets/holding_tile.dart';
+import 'package:crypto_trader/widgets/trade_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/portfolio_provider.dart';
@@ -78,7 +80,19 @@ class PortfolioScreen extends ConsumerWidget {
                 return HoldingTile(
                   holding: holding,
                   currentPrice: currentPrice,
-                  onTap: () {},
+                  onTap: () => showTradeModal(
+                    context,
+                    coin: Coin(
+                      id: holding.coinId,
+                      name: holding.coinName,
+                      symbol: holding.coinSymbol,
+                      image: holding.coinImage,
+                      currentPrice: currentPrice,
+                      priceChangePercentage24h: 0,
+                      marketCap: 0,
+                    ),
+                    existingHolding: holding,
+                  ),
                 );
               }, childCount: portfolio.holdings.length),
             ),

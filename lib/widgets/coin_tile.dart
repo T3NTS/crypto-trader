@@ -15,6 +15,7 @@ class CoinTile extends StatelessWidget {
     final changePrefix = isPositive ? '+' : '';
 
     return ListTile(
+      onTap: onTap,
       leading: CachedNetworkImage(
         imageUrl: coin.image,
         width: 40,
