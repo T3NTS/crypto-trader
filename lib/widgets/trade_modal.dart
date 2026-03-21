@@ -46,8 +46,13 @@ class _TradeModalState extends ConsumerState<TradeModal> {
   void _onAmountChanged() {
     final input = double.tryParse(_amountController.text) ?? 0;
     setState(() {
-      _usdAmount = input;
-      _coinAmount = input / widget.coin.currentPrice;
+      if (_isBuying) {
+        _usdAmount = input;
+        _coinAmount = input / widget.coin.currentPrice;
+      } else {
+        _coinAmount = input;
+        _usdAmount = input * widget.coin.currentPrice;
+      }
       _errorMessage = null;
     });
   }
@@ -88,7 +93,9 @@ class _TradeModalState extends ConsumerState<TradeModal> {
           const SizedBox(height: 8),
 
           Text(
-            '≈ ${_coinAmount.toStringAsFixed(5)} ${widget.coin.symbol.toUpperCase()}',
+            _isBuying
+                ? '≈ ${_coinAmount.toStringAsFixed(5)} ${widget.coin.symbol.toUpperCase()}'
+                : '≈ \$${_usdAmount.toStringAsFixed(2)}',
             style: const TextStyle(color: Colors.grey, fontSize: 13),
           ),
           const SizedBox(height: 8),
@@ -155,6 +162,7 @@ class _TradeModalState extends ConsumerState<TradeModal> {
               onTap: () => setState(() {
                 _isBuying = true;
                 _errorMessage = null;
+                _amountController.clear();
               }),
             ),
           ),
@@ -166,6 +174,7 @@ class _TradeModalState extends ConsumerState<TradeModal> {
               onTap: () => setState(() {
                 _isBuying = false;
                 _errorMessage = null;
+                _amountController.clear();
               }),
             ),
           ),
@@ -182,8 +191,10 @@ class _TradeModalState extends ConsumerState<TradeModal> {
         FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
       ],
       decoration: InputDecoration(
-        labelText: 'Amount in USD',
-        prefixText: '\$ ',
+        labelText: _isBuying
+            ? 'Amount in USD'
+            : 'Amount in ${widget.coin.symbol.toUpperCase()}',
+        prefixText: _isBuying ? '\$ ' : null,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
