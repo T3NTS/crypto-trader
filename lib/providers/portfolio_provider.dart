@@ -109,7 +109,7 @@ class PortfolioNotifier extends StateNotifier<PortfolioState> {
         coinImage: existing.coinImage,
         amount: totalAmount,
         averageBuyPrice: avgPrice,
-        lastKnownPrice: coin.currentPrice,
+        lastKnownPrice: existing.lastKnownPrice,
       );
     } else {
       updatedHoldings.add(
