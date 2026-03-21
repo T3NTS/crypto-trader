@@ -1,33 +1,30 @@
+import 'package:crypto_trader/models/holding.dart';
+import 'package:crypto_trader/providers/portfolio_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/coin.dart';
-import '../models/holding.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-void showTradeModal(
-  BuildContext context, {
-  required Coin coin,
-  Holding? existingHolding,
-}) {
+void showTradeModal(BuildContext context, {required Coin coin}) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => TradeModal(coin: coin, existingHolding: existingHolding),
+    builder: (_) => TradeModal(coin: coin),
   );
 }
 
-class TradeModal extends StatefulWidget {
+class TradeModal extends ConsumerStatefulWidget {
   final Coin coin;
-  final Holding? existingHolding;
 
-  const TradeModal({super.key, required this.coin, this.existingHolding});
+  const TradeModal({super.key, required this.coin});
 
   @override
-  State<TradeModal> createState() => _TradeModalState();
+  ConsumerState<TradeModal> createState() => _TradeModalState();
 }
 
-class _TradeModalState extends State<TradeModal> {
+class _TradeModalState extends ConsumerState<TradeModal> {
   late bool _isBuying = true;
   final _amountController = TextEditingController();
   double _usdAmount = 0;
@@ -90,11 +87,10 @@ class _TradeModalState extends State<TradeModal> {
           _buildAmountInput(),
           const SizedBox(height: 8),
 
-          if (_coinAmount > 0)
-            Text(
-              '≈ ${_coinAmount.toStringAsFixed(6)} ${widget.coin.symbol.toUpperCase()}',
-              style: const TextStyle(color: Colors.grey, fontSize: 13),
-            ),
+          Text(
+            '≈ ${_coinAmount.toStringAsFixed(5)} ${widget.coin.symbol.toUpperCase()}',
+            style: const TextStyle(color: Colors.grey, fontSize: 13),
+          ),
           const SizedBox(height: 8),
 
           _buildAvailableInfo(),
@@ -194,15 +190,27 @@ class _TradeModalState extends State<TradeModal> {
   }
 
   Widget _buildAvailableInfo() {
+    final portfolio = ref.watch(portfolioProvider);
+
     if (_isBuying) {
-      return const Text(
-        'Available: \$0.00',
-        style: TextStyle(color: Colors.grey, fontSize: 13),
+      return Text(
+        'Available: \$${portfolio.cashBalance.toStringAsFixed(2)}',
+        style: const TextStyle(color: Colors.grey, fontSize: 13),
       );
     } else {
-      final holdingAmount = widget.existingHolding?.amount ?? 0;
+      final holding = portfolio.holdings.firstWhere(
+        (h) => h.coinId == widget.coin.id,
+        orElse: () => Holding(
+          coinId: widget.coin.id,
+          coinName: widget.coin.name,
+          coinSymbol: widget.coin.symbol,
+          coinImage: widget.coin.image,
+          amount: 0,
+          averageBuyPrice: 0,
+        ),
+      );
       return Text(
-        'Holdings: $holdingAmount ${widget.coin.symbol.toUpperCase()}',
+        'Holdings: ${holding.amount.toStringAsFixed(5)} ${widget.coin.symbol.toUpperCase()}',
         style: const TextStyle(color: Colors.grey, fontSize: 13),
       );
     }
@@ -218,7 +226,7 @@ class _TradeModalState extends State<TradeModal> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: _usdAmount > 0 ? () {} : null,
+        onPressed: _usdAmount > 0 ? _executeTrade : null,
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           foregroundColor: Colors.white,
@@ -234,9 +242,25 @@ class _TradeModalState extends State<TradeModal> {
       ),
     );
   }
+
+  Future<void> _executeTrade() async {
+    final notifier = ref.read(portfolioProvider.notifier);
+
+    try {
+      if (_isBuying) {
+        await notifier.buy(widget.coin, _coinAmount);
+      } else {
+        await notifier.sell(widget.coin, _coinAmount);
+      }
+      if (mounted) Navigator.pop(context);
+    } catch (e) {
+      setState(() {
+        _errorMessage = e.toString().replaceAll('Exception: ', '');
+      });
+    }
+  }
 }
 
-// Private toggle button widget
 class _ToggleButton extends StatelessWidget {
   final String label;
   final bool isSelected;

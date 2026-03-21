@@ -91,7 +91,6 @@ class PortfolioScreen extends ConsumerWidget {
                       priceChangePercentage24h: 0,
                       marketCap: 0,
                     ),
-                    existingHolding: holding,
                   ),
                 );
               }, childCount: portfolio.holdings.length),
