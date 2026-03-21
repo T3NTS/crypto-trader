@@ -109,6 +109,7 @@ class PortfolioNotifier extends StateNotifier<PortfolioState> {
         coinImage: existing.coinImage,
         amount: totalAmount,
         averageBuyPrice: avgPrice,
+        lastKnownPrice: existing.lastKnownPrice,
       );
     } else {
       updatedHoldings.add(
@@ -119,6 +120,7 @@ class PortfolioNotifier extends StateNotifier<PortfolioState> {
           coinImage: coin.image,
           amount: amount,
           averageBuyPrice: coin.currentPrice,
+          lastKnownPrice: coin.currentPrice,
         ),
       );
     }
@@ -168,6 +170,7 @@ class PortfolioNotifier extends StateNotifier<PortfolioState> {
         coinImage: existing.coinImage,
         amount: existing.amount - amount,
         averageBuyPrice: existing.averageBuyPrice,
+        lastKnownPrice: existing.lastKnownPrice,
       );
     }
 
@@ -193,6 +196,25 @@ class PortfolioNotifier extends StateNotifier<PortfolioState> {
   Future<void> reset() async {
     state = const PortfolioState();
     await _box.clear();
+  }
+
+  void updateLastKnownPrices(Map<String, double> prices) {
+    final updatedHoldings = state.holdings.map((h) {
+      final freshPrice = prices[h.coinId];
+      if (freshPrice == null) return h;
+      return Holding(
+        coinId: h.coinId,
+        coinName: h.coinName,
+        coinSymbol: h.coinSymbol,
+        coinImage: h.coinImage,
+        amount: h.amount,
+        averageBuyPrice: h.averageBuyPrice,
+        lastKnownPrice: freshPrice,
+      );
+    }).toList();
+
+    state = state.copyWith(holdings: updatedHoldings);
+    _save();
   }
 }
 
